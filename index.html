@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinanciKu | Kelola Keuangan & Dompet</title>
+    
+    <!-- Pustaka -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    
+    <!-- Konfigurasi Tailwind -->
+    <script>
+      tailwind.config = {
+    theme: {
+        extend: {
+            fontFamily: {
+                sans: ['Poppins', 'sans-serif'],
+                tampil: ['Lato', 'sans-serif'], // nama panggilan kustom
+            },
+            // ...bagian warna tetap sama
+        }
+    },
+    darkMode: 'class'
+}
+    </script>
+
+    <!-- Hapus atau ganti baris @import lama -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-50 dark:bg-dark dark:text-slate-100 min-h-screen transition-colors duration-300">
+    <!-- Navbar -->
+       <nav class="bg-white/80 dark:bg-surface/80 backdrop-blur-md shadow-sm sticky top-0 z-50 transition-all duration-300">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <!-- Logo + Nama Aplikasi -->
+            <div class="flex items-center gap-2">
+                <!-- Logo di sini -->
+                <img src="Financial.png" alt="Logo" class="w-9 h-9 rounded-lg object-contain">
+                <h1 class="font-bold text-lg">FinanciKu</h1>
+            </div>
+            
+            <!-- Tombol di kanan -->
+            <div class="flex items-center gap-1 sm:gap-2">
+                <button id="themeToggle" class="w-9 h-9 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition-all flex items-center justify-center" title="Ganti Tema">
+                    <i class="fa fa-moon-o dark:hidden"></i>
+                    <i class="fa fa-sun-o hidden dark:inline"></i>
+                </button>
+                <button id="exportData" class="w-9 h-9 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition-all flex items-center justify-center" title="Ekspor Data">
+                    <i class="fa fa-download"></i>
+                </button>
+                <button id="importData" class="w-9 h-9 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition-all flex items-center justify-center" title="Impor Data">
+                    <i class="fa fa-upload"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+    </nav>
+
+    <main class="container mx-auto px-4 py-6 max-w-7xl">
+        <!-- Ringkasan Keuangan -->
+        <section class="mb-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                <!-- Total Saldo Semua Dompet -->
+                <div class="stat-card bg-white dark:bg-surface rounded-2xl p-5 shadow-glow">
+                    <div class="flex justify-between items-start mb-3">
+                        <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Total Keseluruhan</p>
+                        <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                            <i class="fa fa-wallet"></i>
+                        </div>
+                    </div>
+                    <h2 id="totalSaldo" class="text-2xl font-bold mb-1">Rp 0</h2>
+                    <p class="text-xs text-slate-400">dari <span id="jumlahDompet">0</span> dompet</p>
+                </div>
+                
+                <!-- Total Pemasukan -->
+                <div class="stat-card bg-white dark:bg-surface rounded-2xl p-5 shadow-glow-green">
+                    <div class="flex justify-between items-start mb-3">
+                        <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Total Masuk</p>
+                        <div class="w-8 h-8 rounded-lg bg-secondary/10 flex items-center justify-center text-secondary">
+                            <i class="fa fa-arrow-down"></i>
+                        </div>
+                    </div>
+                    <h3 id="totalMasuk" class="text-2xl font-bold text-secondary mb-1">Rp 0</h3>
+                    <p class="text-xs text-green-500"><i class="fa fa-arrow-up"></i> <span id="persenMasuk">+0%</span> dibanding bulan lalu</p>
+                </div>
+                
+                <!-- Total Pengeluaran -->
+                <div class="stat-card bg-white dark:bg-surface rounded-2xl p-5 shadow-glow-red sm:col-span-2 lg:col-span-1">
+                    <div class="flex justify-between items-start mb-3">
+                        <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Total Keluar</p>
+                        <div class="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center text-accent">
+                            <i class="fa fa-arrow-up"></i>
+                        </div>
+                    </div>
+                    <h3 id="totalKeluar" class="text-2xl font-bold text-accent mb-1">Rp 0</h3>
+                    <p class="text-xs text-red-500"><i class="fa fa-minus"></i> <span id="persenKeluar">0%</span> dibanding bulan lalu</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Daftar Dompet -->
+        <section class="mb-8">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="font-semibold text-lg flex items-center gap-2">
+                    <i class="fa fa-briefcase text-primary"></i> Dompet Saya
+                </h2>
+                <button id="btnTambahDompet" class="bg-primary hover:bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-all hover:scale-105 active:scale-95">
+                    <i class="fa fa-plus"></i> Dompet Baru
+                </button>
+            </div>
+            <div id="daftarDompet" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="col-span-full text-center py-8 text-slate-400">
+                    <i class="fa fa-credit-card text-3xl mb-2 opacity-30"></i>
+                    <p>Belum ada dompet. Buat dompet pertama Anda!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tombol Aksi Cepat -->
+        <section class="flex flex-wrap gap-3 mb-8">
+            <button id="btnTambahMasuk" class="bg-secondary hover:bg-green-600 text-white px-5 py-3 rounded-xl font-medium flex items-center gap-2 transition-all hover:scale-105 active:scale-95 shadow-lg shadow-green-500/20">
+                <i class="fa fa-plus-circle"></i> Tambah Masuk
+            </button>
+            <button id="btnTambahKeluar" class="bg-accent hover:bg-red-600 text-white px-5 py-3 rounded-xl font-medium flex items-center gap-2 transition-all hover:scale-105 active:scale-95 shadow-lg shadow-red-500/20">
+                <i class="fa fa-minus-circle"></i> Tambah Keluar
+            </button>
+            <button id="btnPindahDompet" class="bg-purple hover:bg-indigo-600 text-white px-5 py-3 rounded-xl font-medium flex items-center gap-2 transition-all hover:scale-105 active:scale-95 shadow-lg shadow-purple-500/20">
+                <i class="fa fa-exchange"></i> Pindah Saldo
+            </button>
+            <button id="btnTambahTujuan" class="bg-warning hover:bg-orange-600 text-white px-5 py-3 rounded-xl font-medium flex items-center gap-2 transition-all hover:scale-105 active:scale-95 shadow-lg shadow-orange-500/20">
+                <i class="fa fa-flag"></i> Tujuan Tabungan
+            </button>
+            <button id="btnResetData" class="ml-auto bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 px-4 py-3 rounded-xl font-medium flex items-center gap-2 transition-colors">
+                <i class="fa fa-refresh"></i> <span class="hidden sm:inline">Reset Data</span>
+            </button>
+        </section>
+
+        <!-- Target Tabungan -->
+        <section class="mb-8">
+            <div class="bg-white dark:bg-surface rounded-2xl p-5 shadow-glow-warning">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-semibold flex items-center gap-2">
+                        <span class="w-8 h-8 rounded-lg bg-warning/10 flex items-center justify-center text-warning">
+                            <i class="fa fa-bullseye"></i>
+                        </span>
+                        Target Tabungan
+                    </h3>
+                    <button id="aturTarget" class="text-sm text-primary hover:bg-primary/10 px-3 py-1.5 rounded-lg transition-colors">
+                        <i class="fa fa-pencil"></i> Ubah
+                    </button>
+                </div>
+                <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+                    <div class="flex-1">
+                        <div class="flex justify-between text-sm mb-2">
+                            <span class="font-semibold text-lg" id="targetSaatIni">Rp 0</span>
+                            <span class="text-slate-400">dari <span id="targetTotal">Rp 1.000.000</span></span>
+                        </div>
+                        <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-3 overflow-hidden">
+                            <div id="progressTarget" class="bg-gradient-to-r from-warning to-orange-400 h-full rounded-full progress-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="text-center sm:text-right min-w-[100px]">
+                        <p class="font-bold text-xl text-warning" id="persenTarget">0%</p>
+                        <p class="text-xs text-slate-400" id="sisaTarget">Sisa Rp 1.000.000</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Grafik & Tujuan -->
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-8">
+            <!-- Grafik -->
+            <div class="lg:col-span-2 bg-white dark:bg-surface rounded-2xl p-5 shadow-glow">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
+                    <h3 class="font-semibold text-lg">Laporan Keuangan</h3>
+                    <select id="filterBulan" class="text-sm border dark:border-slate-600 rounded-lg px-3 py-2 dark:bg-slate-700 w-full sm:w-auto">
+                        <option value="semua">Semua Waktu</option>
+                        <option value="0">Bulan Ini</option>
+                        <option value="-1">Bulan Lalu</option>
+                        <option value="-2">2 Bulan Lalu</option>
+                    </select>
+                </div>
+                <div class="h-[300px]">
+                    <canvas id="keuanganChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Tujuan Tabungan -->
+            <div class="bg-white dark:bg-surface rounded-2xl p-5 shadow-glow">
+                <h3 class="font-semibold text-lg mb-4 flex items-center gap-2">
+                    <i class="fa fa-flag text-warning"></i> Tujuan Tabungan
+                </h3>
+                <div id="daftarTujuan" class="space-y-4 max-h-[320px] overflow-y-auto pr-1 scrollbar-thin">
+                    <div class="text-center py-6 text-slate-400">
+                        <i class="fa fa-flag-o text-3xl mb-2 opacity-30"></i>
+                        <p class="text-sm">Belum ada tujuan. Buat tujuan pertama Anda!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Riwayat Transaksi -->
+        <section class="bg-white dark:bg-surface rounded-2xl p-5 shadow-glow">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-5">
+                <h3 class="font-semibold text-lg">Riwayat Transaksi</h3>
+                <div class="flex gap-2 w-full sm:w-auto">
+                    <input type="text" id="cariTransaksi" placeholder="Cari transaksi..." class="text-sm border dark:border-slate-600 rounded-lg px-3 py-2 dark:bg-slate-700 flex-1 sm:w-44">
+                    <select id="filterDompet" class="text-sm border dark:border-slate-600 rounded-lg px-3 py-2 dark:bg-slate-700 w-36">
+                        <option value="semua">Semua Dompet</option>
+                    </select>
+                    <select id="filterJenis" class="text-sm border dark:border-slate-600 rounded-lg px-3 py-2 dark:bg-slate-700 w-32">
+                        <option value="semua">Semua</option>
+                        <option value="masuk">Masuk</option>
+                        <option value="keluar">Keluar</option>
+                        <option value="pindah">Pindah</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div id="daftarTransaksi" class="divide-y dark:divide-slate-700">
+                <div class="text-center py-8 text-slate-400">
+                    <i class="fa fa-list-alt text-3xl mb-2 opacity-30"></i>
+                    <p>Belum ada transaksi. Mulai catat keuangan Anda!</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="py-6 mt-10 text-center text-sm text-slate-400 border-t dark:border-slate-800">
+        <p>© 2026 FinanciKu • Data tersimpan aman di perangkat Anda</p>
+    </footer>
+    
+    <!-- Modal Tambah Dompet -->
+    <div id="modalDompet" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden modal-backdrop">
+        <div class="bg-white dark:bg-surface rounded-2xl p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto transform transition-all scale-95 opacity-0" id="modalDompetContent">
+            <h3 id="judulDompet" class="font-bold text-xl mb-5">Dompet Baru</h3>
+            <form id="formDompet" class="space-y-4">
+                <input type="hidden" id="dompetId">
+                <div>
+                    <label class="block text-sm font-medium mb-1.5">Nama Dompet</label>
+                    <input type="text" id="namaDompet" placeholder="Contoh: Gaji, Belanja, Tabungan" required class="w-full border dark:border-slate-600 rounded-xl p-3 dark:bg-slate-700 focus:ring-2 focus:ring-primary/50 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1.5">Saldo Awal (Rp)</label>
+                    <input type="number" id="saldoAwal" min="0" value="0" class="w-full border dark:border-slate-600 rounded-xl p-3 dark:bg-slate-700">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1.5">Warna</label>
+                    <div class="flex gap-3 flex-wrap">
+                        <label class="cursor-pointer"><input type="radio" name="warnaDompet" value="primary" class="hidden peer"><span class="w-8 h-8 rounded-full bg-primary block peer-checked:ring-2 peer-checked:ring-offset-2 peer-checked:ring-primary"></span></label>
+                        <label class="cursor-pointer"><input type="radio" name="warnaDompet" value="secondary" class="hidden peer"><span class="w-8 h-8 rounded-full bg-secondary block peer-checked:ring-2 peer-checked:ring-offset-2 peer-checked:ring-secondary"></span></label>
+                        <label class="cursor-pointer"><input type="radio" name="warnaDompet" value="warning" class="hidden peer"><span class="w-8 h-8 rounded-full bg-warning block peer-checked:ring-2 peer-checked:ring-offset-2 peer-checked:ring-warning"></span></label>
+                        <label class="cursor-pointer"><input type="radio" name="warnaDompet" value="purple" class="hidden peer" checked><span class="w-8 h-8 rounded-full bg-purple block peer-checked:ring-2 peer-checked:ring-offset-2 peer-checked:ring-purple"></span></label>
+                        <label class="cursor-pointer"><input type="radio" name="warnaDompet" value="pink" class="hidden peer"><span class="w-8 h-8 rounded-full bg-pink block peer-checked:ring-2 peer-checked:ring-offset-2 peer-checked:ring-pink"></span></label>
+                        <label class="cursor-pointer"><input type="radio" name="warnaDompet" value="teal" class="hidden peer"><span class="w-8 h-8 rounded-full bg-teal block peer-checked:ring-2 peer-checked:ring-offset-2 peer-checked:ring-teal"></span></label>
+                        <label class="cursor-pointer"><input type="radio" name="warnaDompet" value="accent" class="hidden peer"><span class="w-8 h-8 rounded-full bg-accent block peer-checked:ring-2 peer-checked:ring-offset-2 peer-checked:ring-accent"></span></label>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1.5">Keterangan (Opsional)</label>
+                    <textarea id="catatanDompet" rows="2" placeholder="Contoh: Untuk kebutuhan sehari-hari" class="w-full border dark:border-slate-600 rounded-xl p-3 dark:bg-slate-700"></textarea>
+                </div>
+                <div class="flex gap-3 pt-3">
+                    <button type="button" id="btnBatalDompet" class="flex-1 px-4 py-3 border dark:border-slate-600 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors font-medium">Batal</button>
+                    <button type="submit" class="flex-1 px-4 py-3 bg-primary text-white rounded-xl hover:bg-blue-600 transition-colors font-medium">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Pindah Saldo -->
+    <div id="modalPindah" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden modal-backdrop">
+        <div class="bg-white dark:bg-surface rounded-2xl p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto transform transition-all scale-95 opacity-0" id="modalPindahContent">
+            <h3 class="font-bold text-xl mb-5 flex items-center gap-2">
+                <i class="fa fa-exchange text-purple"></i> Pindah Saldo Antar Dompet
+            </h3>
+            <form id="formPindah" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1.5">Dari Dompet</label>
+                    <select id="dariDompet" required class="w-full border dark:border-slate-600 rounded-xl p-3 dark:bg-slate-700">
+                        <option value="">Pilih dompet asal</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1.5">Ke Dompet</label>
+                    <select id="keDompet" required class="w-full border dark:border-slate-600 rounded-xl p-3 dark:bg-slate-700">
+                        <option value="">Pilih dompet tujuan</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1.5">Jumlah (Rp)</label>
+                    <input type="number" id="jumlahPindah" min="1" required class="w-full border dark:border-slate-600 rounded-xl p-3 dark:bg-slate-700">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1.5">Keterangan (Opsional)</label>
+                    <input type="text" id="keteranganPindah" placeholder="Contoh: Simpanan ke tabungan" class="w-full border dark:border-slate-600 rounded-xl p-3 dark:bg-slate-700">
+                </div>
+                <div class="flex gap-3 pt-3">
+                    <button type="button" id="btnBatalPindah" class="flex-1 px-4 py-3 border dark:border-slate-600 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors font-medium">Batal</button>
+                    <button type="submit" class="flex-1 px-4 py-3 bg-purple text-white rounded-xl hover:bg-indigo-600 transition-colors font-medium">Pindahkan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal Transaksi -->
+    <div id="modalTransaksi" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden modal-backdrop">
+        <div class="bg-white dark:bg-surface rounded-2xl p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto transform transition-all scale-95 opacity-0" id="modalContent">
+            <h3 id="modalTitle" class="font-bold text-xl mb-5">Tambah Transaksi</h3>
+            <form id="formTransaksi" class="space-y-4">
+                <input type="hidden" id="transaksiId">
+                <input type="hidden" id="jenisTransaksi">
+                
+                <div>
+                    <label class="block text-sm font-medium mb-1.5">Dompet</label>
+                    <select id="dompetTransaksi" required class="w-full border dark:border-slate-600 rounded-xl p-3 dark:bg-slate-700">
+                        <option value="">Pilih dompet</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1.5">Keterangan</label>
+                    <input type="text" id="keterangan" required class="w-full border dark:border-slate-600 rounded-xl p-3 dark:bg-slate-700 focus:ring-2 focus:ring-primary/50 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1.5">Jumlah (Rp)</label>
+                    <input type="number" id="jumlah" min="1" required class="w-full border dark:border-slate-600 rounded-xl p-3 dark:bg-slate-700 focus:ring-2 focus:ring-primary/50 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1.5">Kategori</label>
+                    <select id="kategori" class="w-full border dark:border-slate-600 rounded-xl p-3 dark:bg-slate-700">
+                        <option value="umum">Umum</option>
+                        <option value="gaji">Gaji</option>
+                        <option value="hadiah">Hadiah</option>
+                        <option value="makanan">Makanan</option>
+                        <option value="belanja">Belanja</option>
+                        <option value="tagihan">Tagihan</option>
+                        <option value="hiburan">Hiburan</option>
+                        <option value="tabungan">Tabungan ke Tujuan</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1.5">Tanggal</label>
+                    <input type="date" id="tanggal" required class="w-full border dark:border-slate-600 rounded-xl p-3 dark:bg-slate-700">
+                </div>
+                <div class="flex gap-3 pt-3">
+                    <button type="button" id="btnBatal" class="flex-1 px-4 py-3 border dark:border-slate-600 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors font-medium">Batal</button>
+                    <button type="submit" class="flex-1 px-4 py-3 bg-primary text-white rounded-xl hover:bg-blue-600 transition-colors font-medium">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal Tujuan -->
+    <div id="modalTarget" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden modal-backdrop">
+        <div class="bg-white dark:bg-surface rounded-2xl p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
+            <h3 id="judulTarget" class="font-bold text-xl mb-5">Tambah Tujuan Tabungan</h3>
+            <form id="formTarget" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1.5">Nama Tujuan</label>
+                    <input type="text" id="namaTujuan" placeholder="Contoh: Beli Motor" class="w-full border dark:border-slate-600 rounded-xl p-3 dark:bg-slate-700">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1.5">Jumlah Target (Rp)</label>
+                    <input type="number" id="jumlahTarget" min="1000" required class="w-full border dark:border-slate-600 rounded-xl p-3 dark:bg-slate-700">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1.5">Catatan / Keterangan</label>
+                    <textarea id="catatanTujuan" rows="2" placeholder="Opsional" class="w-full border dark:border-slate-600 rounded-xl p-3 dark:bg-slate-700"></textarea>
+                </div>
+                <div class="flex gap-3 pt-3">
+                    <button type="button" id="btnBatalTarget" class="flex-1 px-4 py-3 border dark:border-slate-600 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors font-medium">Batal</button>
+                    <button type="submit" class="flex-1 px-4 py-3 bg-primary text-white rounded-xl hover:bg-blue-600 transition-colors font-medium">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Input File Impor -->
+    <input type="file" id="fileInput" accept=".json" class="hidden">
+
+    <script src="app.js"></script>
+
+          <!-- Modal Setor ke Tujuan -->
+    <div id="modalSetorTujuan" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden modal-backdrop">
+        <div class="bg-white dark:bg-surface rounded-2xl p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
+            <h3 class="font-bold text-xl mb-2 flex items-center gap-2">
+                <i class="fa fa-piggy-bank text-warning"></i> Setor ke Tabungan
+            </h3>
+            <p class="text-sm text-slate-500 mb-5">
+                <span id="namaTujuanSetor" class="font-semibold">Nama Tujuan</span>
+                <span id="sisaSetor" class="block mt-1"></span>
+            </p>
+            <form id="formSetorTujuan" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1.5">Dari Dompet</label>
+                    <select id="dompetSetor" required class="w-full border dark:border-slate-600 rounded-xl p-3 dark:bg-slate-700">
+                        <option value="">Memuat daftar dompet...</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1.5">Jumlah Disetor (Rp)</label>
+                    <input type="number" id="jumlahSetor" min="1" required class="w-full border dark:border-slate-600 rounded-xl p-3 dark:bg-slate-700" placeholder="Contoh: 50000">
+                </div>
+                <div class="flex gap-3 pt-3">
+                    <button type="button" id="btnBatalSetor" class="flex-1 px-4 py-3 border dark:border-slate-600 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors font-medium">Batal</button>
+                    <button type="submit" class="flex-1 px-4 py-3 bg-warning text-white rounded-xl hover:bg-orange-600 transition-colors font-medium">Simpan & Setor</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <h2 class="font-tampil text-2xl font-bold">Judul dengan font Lato</h2>
+<p class="font-sans">Teks biasa dengan font Poppins</p>
+
+</body>
+</html>

@@ -1,0 +1,186 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+/* Stat Card Hover */
+.stat-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.stat-card:hover {
+    transform: translateY(-4px);
+}
+
+/* Dompet Card */
+.dompet-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+}
+.dompet-card:hover {
+    transform: translateY(-3px);
+}
+
+/* Progress Bar */
+.progress-bar {
+    transition: width 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Transaksi Item Animation */
+.transaction-item {
+    animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    opacity: 0;
+    transform: translateY(12px);
+}
+
+@keyframes slideIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(12px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+/* Modal Backdrop */
+.modal-backdrop {
+    backdrop-filter: blur(8px);
+}
+
+/* Input Number */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Scrollbar */
+.scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+.dark .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #475569;
+}
+
+/* Button Ripple Effect */
+button:active {
+    transform: scale(0.97);
+}
+
+/* Focus States */
+input:focus, select:focus, textarea:focus {
+    box-shadow: 0 0 0 3px rgba(22, 93, 255, 0.15);
+}
+
+/* Warna Dompet */
+.bg-primary { background-color: #165DFF; }
+.bg-secondary { background-color: #00B42A; }
+.bg-warning { background-color: #FF7D00; }
+.bg-purple { background-color: #7B61FF; }
+.bg-pink { background-color: #F53894; }
+.bg-teal { background-color: #00B5B0; }
+.bg-accent { background-color: #F53F3F; }
+
+.text-purple { color: #7B61FF; }
+.bg-purple\/10 { background-color: rgba(123, 97, 255, 0.1); }
+
+/* Tetapkan font utama */
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Gaya khusus untuk elemen tertentu */
+h1, h2, h3, h4, .font-bold {
+    font-family: 'Lato', sans-serif;
+    letter-spacing: -0.3px;
+}
+
+@font-face {
+    font-family: 'FontKustom';
+    src: url('fonts/FontKustom-Regular.woff2') format('woff2'),
+         url('fonts/FontKustom-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'FontKustom';
+    src: url('fonts/FontKustom-Bold.woff2') format('woff2'),
+         url('fonts/FontKustom-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'FontKustom';
+    src: url('fonts/FontKustom-Italic.ttf') format('truetype');
+    font-weight: 400;
+    font-style: italic;
+    font-display: swap;
+}
+
+body {
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+fontFamily: {
+    sans: ['FontKustom', 'system-ui', 'sans-serif'],
+}
+
+/* Haluskan teks */
+* {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Atur jarak & ukuran teks */
+body {
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+h1 {
+    font-size: 1.8rem;
+    line-height: 1.2;
+}
+
+h2 {
+    font-size: 1.4rem;
+    line-height: 1.3;
+}
+
+p {
+    margin-bottom: 0.75rem;
+}
+
+/* Logo di Navbar */
+nav img {
+    transition: transform 0.2s ease;
+}
+
+nav img:hover {
+    transform: scale(1.05);
+}
+
+/* Jika ingin menghilangkan sudut melengkung */
+nav img {
+    border-radius: 0;
+}
+
+/* Sesuaikan jarak antara logo dan nama */
+nav .gap-2 {
+    gap: 10px; /* Ubah sesuai selera */
+}
+
