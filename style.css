@@ -1,3 +1,14 @@
+/* Tema Gelap */
+.dark body {
+    background-color: #0F172A;
+    color: #E2E8F0;
+}
+
+/* Pastikan transisi halus */
+body {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 * {

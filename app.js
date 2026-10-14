@@ -711,12 +711,21 @@ function perbaruiGrafik() {
 document.addEventListener('DOMContentLoaded', function() {
     perbaruiTampilan();
 
-    // Tema
+      // Tema — DIPERBAIKI
     const themeToggle = document.getElementById('themeToggle');
     if (themeToggle) {
         themeToggle.onclick = () => {
-            document.documentElement.classList.toggle('dark');
-            data.pengaturan.tema = document.documentElement.classList.contains('dark') ? 'gelap' : 'terang';
+            const html = document.documentElement;
+            const sedangGelap = html.classList.contains('dark');
+            
+            if (sedangGelap) {
+                html.classList.remove('dark');
+                data.pengaturan.tema = 'terang';
+            } else {
+                html.classList.add('dark');
+                data.pengaturan.tema = 'gelap';
+            }
+            
             simpanData();
         };
     }
@@ -1037,4 +1046,64 @@ document.addEventListener('DOMContentLoaded', function() {
     if (btnBatalSetor) {
         btnBatalSetor.onclick = tutupModalSetorTujuan;
     }
+});
+
+
+function muatData() {
+    const tersimpan = localStorage.getItem('dataTabungan');
+    if (tersimpan) {
+        data = JSON.parse(tersimpan);
+        if (!data.dompet) data.dompet = [];
+        if (data.dompet.length === 0) {
+            data.dompet.push({ id: 'umum', nama: 'Dompet Utama', saldo: 0, warna: 'primary', catatan: 'Dompet untuk semua kebutuhan' });
+        }
+        if (!data.transaksi) data.transaksi = [];
+        if (!data.tujuan) data.tujuan = [];
+        if (!data.pengaturan) data.pengaturan = { tema: 'terang' };
+    }
+
+    // ✅ Terapkan tema dengan benar saat halaman dibuka
+    terapkanTema(data.pengaturan.tema);
+}
+
+// ==============================================
+// PENGELOLAAN TEMA — VERSI DIPERBAIKI
+// ==============================================
+
+// Terapkan tema yang tersimpan
+function terapkanTema(tema) {
+    const html = document.documentElement;
+    if (tema === 'gelap') {
+        html.classList.add('dark');
+    } else {
+        html.classList.remove('dark');
+    }
+}
+
+// Muat tema saat halaman dibuka
+function muatTema() {
+    const tersimpan = localStorage.getItem('temaTabungan');
+    const tema = tersimpan || 'terang';
+    terapkanTema(tema);
+}
+
+// Ganti tema saat tombol diklik
+function pasangTombolTema() {
+    const tombol = document.getElementById('themeToggle');
+    if (!tombol) return;
+
+    tombol.onclick = function () {
+        const html = document.documentElement;
+        const sedangGelap = html.classList.contains('dark');
+        const temaBaru = sedangGelap ? 'terang' : 'gelap';
+        
+        terapkanTema(temaBaru);
+        localStorage.setItem('temaTabungan', temaBaru);
+    };
+}
+
+// Jalankan saat halaman siap
+document.addEventListener('DOMContentLoaded', function () {
+    muatTema();
+    pasangTombolTema();
 });

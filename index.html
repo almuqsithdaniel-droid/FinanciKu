@@ -11,20 +11,24 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
     
     <!-- Konfigurasi Tailwind -->
-    <script>
-      tailwind.config = {
-    theme: {
-        extend: {
-            fontFamily: {
-                sans: ['Poppins', 'sans-serif'],
-                tampil: ['Lato', 'sans-serif'], // nama panggilan kustom
+   <script>
+    tailwind.config = {
+        darkMode: 'class', // WAJIB ada di sini
+        theme: {
+            extend: {
+                colors: {
+                    primary: '#165DFF',
+                    secondary: '#00B42A',
+                    accent: '#F53F3F',
+                    warning: '#FF7D00',
+                    purple: '#7B61FF',
+                    dark: '#0F172A',
+                    surface: '#1E293B',
+                },
             },
-            // ...bagian warna tetap sama
         }
-    },
-    darkMode: 'class'
-}
-    </script>
+    }
+</script>
 
     <!-- Hapus atau ganti baris @import lama -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
